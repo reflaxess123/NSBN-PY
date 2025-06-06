@@ -10,9 +10,10 @@ RUN apt-get update && apt-get install -y \
 # Установка Poetry
 RUN pip install poetry
 
-# Настройка Poetry
+# Настройка Poetry - НЕ создавать виртуальную среду в контейнере
 ENV POETRY_NO_INTERACTION=1 \
-    POETRY_VENV_IN_PROJECT=1 \
+    POETRY_VENV_IN_PROJECT=false \
+    POETRY_VIRTUALENVS_CREATE=false \
     POETRY_CACHE_DIR=/tmp/poetry_cache
 
 # Создание рабочей директории
@@ -21,7 +22,7 @@ WORKDIR /app
 # Копирование файлов зависимостей
 COPY pyproject.toml poetry.lock ./
 
-# Установка зависимостей через Poetry
+# Установка зависимостей через Poetry прямо в систему
 RUN poetry install --without dev && rm -rf $POETRY_CACHE_DIR
 
 # Копирование исходного кода
@@ -34,5 +35,5 @@ USER appuser
 # Открытие порта
 EXPOSE 4000
 
-# Команда запуска с миграциями
-CMD ["sh", "-c", "poetry run alembic upgrade head && poetry run python main.py"]
+# Команда запуска с миграциями (теперь alembic доступен глобально)
+CMD ["sh", "-c", "alembic upgrade head && python main.py"]
