@@ -10,7 +10,7 @@ from app.models import User
 from app.auth import get_current_user_from_session
 from app.routers import auth, theory, content, stats, admin
 
-# Создание приложения FastAPI
+# Создание приложения FastAPI ////
 app = FastAPI(
     title="Nareshka Learning Platform API",
     description="API для платформы изучения программирования",
