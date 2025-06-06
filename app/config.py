@@ -2,6 +2,13 @@ from typing import List
 from pydantic_settings import BaseSettings
 
 
+# Константы для валидации
+MAX_EMAIL_LENGTH = 255
+MAX_PASSWORD_LENGTH = 255
+MIN_PASSWORD_LENGTH = 8
+SESSION_EXPIRE_HOURS = 24
+
+
 class Settings(BaseSettings):
     # База данных
     database_url: str

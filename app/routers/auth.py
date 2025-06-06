@@ -12,7 +12,8 @@ from ..auth import (
     verify_password,
     create_session,
     delete_session,
-    get_current_user_from_session
+    get_current_user_from_session,
+    get_current_user_from_session_required
 )
 from ..config import settings
 
@@ -69,6 +70,7 @@ async def register(user: UserCreate, request: Request, response: Response, db: S
         
     except Exception as e:
         logger.error(f"Registration error: {e}")
+        db.rollback()  # Откатываем транзакцию при ошибке
         raise HTTPException(
             status_code=500,
             detail="Internal server error"
@@ -189,8 +191,16 @@ async def check_auth(request: Request, db: Session = Depends(get_db)):
 
 # Отладочный эндпоинт для проверки пользователей
 @router.get("/debug/users")
-async def debug_users(db: Session = Depends(get_db)):
+async def debug_users(request: Request, db: Session = Depends(get_db)):
     """Отладочный эндпоинт для просмотра пользователей"""
+    # Добавляем проверку прав администратора
+    user = get_current_user_from_session_required(request, db)
+    if user.role != "ADMIN":
+        raise HTTPException(
+            status_code=403,
+            detail="Admin access required"
+        )
+    
     users = db.query(User).all()
     return {
         "total_users": len(users),

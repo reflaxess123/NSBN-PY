@@ -22,8 +22,8 @@ class User(Base):
     __tablename__ = "User"
     
     id = Column(Integer, primary_key=True, autoincrement=True)
-    email = Column(String, unique=True, nullable=False)
-    password = Column(String, nullable=False)
+    email = Column(String(255), unique=True, nullable=False)
+    password = Column(String(255), nullable=False)
     role = Column(SQLEnum(UserRole), default=UserRole.USER, nullable=False)
     createdAt = Column(DateTime, default=func.now(), nullable=False)
     updatedAt = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
