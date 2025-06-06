@@ -1,5 +1,6 @@
 from typing import List
-from pydantic_settings import BaseSettings
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 # Константы для валидации
@@ -32,7 +33,10 @@ class Settings(BaseSettings):
     webdav_password: str = ""
     
     # CORS (как строка, разделенная запятыми)
-    allowed_origins_str: str = "https://nareshka.site,https://v2.nareshka.site,http://localhost:5173"
+    allowed_origins_str: str = Field(
+        default="https://nareshka.site,https://v2.nareshka.site,http://localhost:5173",
+        alias="ALLOWED_ORIGINS"
+    )
     
     @property
     def allowed_origins(self) -> List[str]:
@@ -44,13 +48,12 @@ class Settings(BaseSettings):
         origins = [origin.strip() for origin in self.allowed_origins_str.split(',')]
         return [origin for origin in origins if origin]  # Убираем пустые строки
     
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
-        # Маппинг переменных окружения
-        fields = {
-            'allowed_origins_str': {'env': 'ALLOWED_ORIGINS'}
-        }
+    # Конфигурация модели для Pydantic V2
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=False,
+        extra="ignore"  # Игнорируем дополнительные поля от Coolify
+    )
 
 
 settings = Settings() 

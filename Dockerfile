@@ -35,5 +35,5 @@ USER appuser
 # Открытие порта
 EXPOSE 4000
 
-# Команда запуска с тестом конфигурации и миграциями
-CMD ["sh", "-c", "python test_config.py && alembic upgrade head && python main.py"]
+# Команда запуска с миграциями
+CMD ["sh", "-c", "alembic upgrade head && python main.py"]
