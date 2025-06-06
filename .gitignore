@@ -157,4 +157,7 @@ media/
 
 # Temporary files
 temp/
-tmp/ 
+tmp/
+
+# Cleanup scripts
+clean_pycache.bat 

@@ -1,1 +1,30 @@
- 
+{
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/*.pyo": true,
+    "**/*.pyd": true,
+    "**/.Python": true,
+    "**/build": true,
+    "**/develop-eggs": true,
+    "**/dist": true,
+    "**/downloads": true,
+    "**/eggs": true,
+    "**/.eggs": true,
+    "**/lib": false,
+    "**/lib64": true,
+    "**/parts": true,
+    "**/sdist": true,
+    "**/var": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+  },
+  "search.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.git": true
+  }
+}
