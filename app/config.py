@@ -1,5 +1,7 @@
-from typing import List
+from typing import List, Union
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
+import json
 
 
 # Константы для валидации
@@ -27,9 +29,9 @@ class Settings(BaseSettings):
     debug: bool = True
     
     # WebDAV
-    webdav_url: str
-    webdav_username: str
-    webdav_password: str
+    webdav_url: str = ""
+    webdav_username: str = ""
+    webdav_password: str = ""
     
     # CORS
     allowed_origins: List[str] = [
@@ -37,6 +39,19 @@ class Settings(BaseSettings):
         "https://v2.nareshka.site", 
         "http://localhost:5173"
     ]
+    
+    @field_validator('allowed_origins', mode='before')
+    @classmethod
+    def parse_allowed_origins(cls, v):
+        """Парсинг allowed_origins из строки или списка"""
+        if isinstance(v, str):
+            try:
+                # Пытаемся парсить как JSON
+                return json.loads(v)
+            except json.JSONDecodeError:
+                # Если не JSON, разделяем по запятым
+                return [origin.strip() for origin in v.split(',') if origin.strip()]
+        return v
     
     class Config:
         env_file = ".env"
