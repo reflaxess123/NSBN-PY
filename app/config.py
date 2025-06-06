@@ -1,7 +1,5 @@
-from typing import List, Union
-from pydantic import field_validator
+from typing import List
 from pydantic_settings import BaseSettings
-import json
 
 
 # Константы для валидации
@@ -33,29 +31,26 @@ class Settings(BaseSettings):
     webdav_username: str = ""
     webdav_password: str = ""
     
-    # CORS
-    allowed_origins: List[str] = [
-        "https://nareshka.site",
-        "https://v2.nareshka.site", 
-        "http://localhost:5173"
-    ]
+    # CORS (как строка, разделенная запятыми)
+    allowed_origins_str: str = "https://nareshka.site,https://v2.nareshka.site,http://localhost:5173"
     
-    @field_validator('allowed_origins', mode='before')
-    @classmethod
-    def parse_allowed_origins(cls, v):
-        """Парсинг allowed_origins из строки или списка"""
-        if isinstance(v, str):
-            try:
-                # Пытаемся парсить как JSON
-                return json.loads(v)
-            except json.JSONDecodeError:
-                # Если не JSON, разделяем по запятым
-                return [origin.strip() for origin in v.split(',') if origin.strip()]
-        return v
+    @property
+    def allowed_origins(self) -> List[str]:
+        """Парсинг allowed_origins из строки"""
+        if not self.allowed_origins_str:
+            return ["*"]  # Разрешить все, если не указано
+        
+        # Разделяем по запятым и очищаем от пробелов
+        origins = [origin.strip() for origin in self.allowed_origins_str.split(',')]
+        return [origin for origin in origins if origin]  # Убираем пустые строки
     
     class Config:
         env_file = ".env"
         case_sensitive = False
+        # Маппинг переменных окружения
+        fields = {
+            'allowed_origins_str': {'env': 'ALLOWED_ORIGINS'}
+        }
 
 
 settings = Settings() 

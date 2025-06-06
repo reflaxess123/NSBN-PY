@@ -27,13 +27,16 @@ def test_config():
         print(f"📊 Database URL: {settings.database_url}")
         print(f"📊 Redis URL: {settings.redis_url}")
         print(f"📊 Debug mode: {settings.debug}")
-        print(f"📊 Allowed origins: {settings.allowed_origins}")
+        print(f"📊 Allowed origins string: {settings.allowed_origins_str}")
+        print(f"📊 Parsed allowed origins: {settings.allowed_origins}")
         print(f"📊 Port: {settings.port}")
         
         return True
         
     except Exception as e:
         print(f"❌ Configuration error: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 if __name__ == "__main__":
